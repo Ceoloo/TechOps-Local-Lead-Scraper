@@ -1,0 +1,19 @@
+{
+  "name": "techops-lead-finder",
+  "version": "1.0.0",
+  "description": "Scraper that identifies qualified local service business leads for TechOps business-infrastructure consulting.",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "sync-airtable": "node main.js --sync-airtable"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "playwright": "^1.45.0"
+  },
+  "license": "MIT"
+}
