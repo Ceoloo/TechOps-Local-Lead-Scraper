@@ -1,0 +1,43 @@
+{
+  "targetArea": {
+    "primaryCity": "Edison",
+    "state": "NJ",
+    "cities": [
+      { "city": "Edison", "state": "NJ", "zip": "08817" },
+      { "city": "Metuchen", "state": "NJ", "zip": "08840" },
+      { "city": "Woodbridge", "state": "NJ", "zip": "07095" },
+      { "city": "Piscataway", "state": "NJ", "zip": "08854" },
+      { "city": "Highland Park", "state": "NJ", "zip": "08904" },
+      { "city": "South Plainfield", "state": "NJ", "zip": "07080" }
+    ]
+  },
+  "searchTerms": [
+    "Electrician Edison NJ",
+    "Commercial Electrician Edison NJ",
+    "HVAC Contractor Edison NJ",
+    "Plumbing Contractor Edison NJ"
+  ],
+  "seedBusinesses": [
+    "Gold Medal Electric",
+    "Edison Electric",
+    "A1 HVAC Services"
+  ],
+  "categoryFilters": ["electrical", "HVAC", "plumbing", "commercial maintenance"],
+  "categoryKeywords": {
+    "electrical": ["electric", "electrician", "electrical"],
+    "HVAC": ["hvac", "heating", "cooling", "air conditioning", "furnace", "ac "],
+    "plumbing": ["plumb", "plumber", "plumbing", "drain", "sewer"],
+    "commercial maintenance": ["maintenance", "facility", "facilities", "property services", "building services"]
+  },
+  "scoring": {
+    "minRating": 4.0,
+    "minReviewCount": 20,
+    "outdatedCopyrightYears": 2
+  },
+  "scraper": {
+    "minDelayMs": 2000,
+    "maxDelayMs": 6000,
+    "maxResultsPerSearch": 60,
+    "websiteFetchTimeoutMs": 15000
+  }
+}
