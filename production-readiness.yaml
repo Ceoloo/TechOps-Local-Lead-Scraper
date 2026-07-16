@@ -1,0 +1,16 @@
+version: 1
+repository: Ceoloo/TechOps-Local-Lead-Scraper
+service_type: worker
+owners:
+  - role: platform
+controls:
+  automated_tests: {implemented: true, ci_verified: true, evidence: ["tests/test_lead_scraper.py (16 tests)"]}
+  reproducible_deployment: {implemented: true, staging_verified: false, evidence: ["Dockerfile", "requirements.txt"]}
+  live_integrations: {implemented: true, mocked_verified: true, live_verified: false, evidence: ["FakeAirtableClient contract tests"]}
+  secrets_management: {implemented: true, ci_verified: true, evidence: [".env.example", "scripts/secret_scan.py"]}
+  monitoring: {implemented: false, evidence: []}
+  backup_recovery: {implemented: false, evidence: []}
+  rollback: {implemented: true, evidence: ["RUNBOOK.md rollback section"]}
+  failure_testing: {implemented: true, ci_verified: true, evidence: ["invalid-lead + dedupe + stale tests"]}
+  compliance: {implemented: true, ci_verified: true, evidence: ["approval-gated handoff; no auto-outreach test"]}
+  business_outcomes: {implemented: true, ci_verified: true, evidence: ["lead.* event emission with scores"]}
