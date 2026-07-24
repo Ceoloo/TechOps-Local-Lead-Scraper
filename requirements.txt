@@ -1,3 +1,10 @@
+# Shared AION platform: event contracts, telemetry, orchestration, health.
+# The event contract (src/lead_scraper/aion_events.py) now binds to this
+# package instead of vendoring a copy. See AUDIT.md, migration step 2.
+# NOTE: aion-company-os is a separate repo; CI needs read access to install it
+# (add a GH token secret if the repo is private).
+aion-platform @ git+https://github.com/Ceoloo/aion-company-os.git@main#subdirectory=packages/aion_platform
+
 # Core lead_scraper is pure-stdlib. Optional integrations below.
 # pyairtable>=2.0   # only when AIRTABLE_* configured (live export)
 # requests>=2.31    # only for live source fetch / telemetry HTTP
