@@ -54,14 +54,18 @@ LEAD_EVENTS = (
     "lead.exported",
 )
 SERVICE_EVENTS = ("service.health_reported", "production_readiness.scored")
-KNOWN_EVENTS = frozenset(LEAD_EVENTS + SERVICE_EVENTS)
+# The scraper originates workflow cost (scraping / compute / source API spend);
+# the value stages (opportunity/contract/cash) are realized downstream in the
+# voice product, so this repo emits cost only.
+REVENUE_EVENTS = ("revenue.workflow_cost_recorded",)
+KNOWN_EVENTS = frozenset(LEAD_EVENTS + SERVICE_EVENTS + REVENUE_EVENTS)
 
 # Backwards-compatible alias: the envelope class this repo historically called ``Event``.
 Event = EventEnvelope
 
 __all__ = [
     "EVENT_VERSION", "SOURCE_SERVICE", "SOURCE_REPOSITORY",
-    "LEAD_EVENTS", "SERVICE_EVENTS", "KNOWN_EVENTS",
+    "LEAD_EVENTS", "SERVICE_EVENTS", "REVENUE_EVENTS", "KNOWN_EVENTS",
     "SENSITIVE_KEYS", "Event", "new_event", "validate_event",
     "redact_payload", "mask_value", "has_unmasked_sensitive",
 ]

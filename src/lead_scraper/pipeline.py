@@ -47,11 +47,18 @@ def run_pipeline(
     *,
     sink: Optional[EventSink] = None,
     qualify_threshold: int = 50,
+    run_cost: Optional[float] = None,
+    run_correlation_id: Optional[str] = None,
 ) -> dict[str, Any]:
     """Run the full pipeline. Returns a summary with qualified/rejected leads.
 
     Correlation: each lead gets one correlation_id that threads discovered ->
     scored -> qualified/rejected, and (later, after approval) -> exported.
+
+    If ``run_cost`` (dollars actually incurred: scraping/compute/source-API
+    spend) is supplied, a single ``revenue.workflow_cost_recorded`` event is
+    emitted for the run so the shared cash funnel can attribute cost. The cost
+    is never estimated -- it is only emitted when the caller provides it.
     """
     unique, dupes = deduplicate(normalize_lead(l) for l in raw_leads)
     qualified: list[Lead] = []
@@ -76,12 +83,23 @@ def run_pipeline(
             _emit(sink, ev.new_event("lead.rejected", payload=_safe_payload(lead, cid),
                                      correlation_id=cid))
 
+    cost_correlation_id: Optional[str] = None
+    if run_cost is not None:
+        from .economics import record_workflow_cost
+        cost_correlation_id = run_correlation_id or ev.new_event("lead.discovered").correlation_id
+        breakdown = {"leads_processed": len(unique)}
+        if unique:
+            breakdown["cost_per_lead"] = round(run_cost / len(unique), 4)
+        record_workflow_cost(sink, cost_correlation_id, amount=run_cost, breakdown=breakdown)
+
     return {
         "processed": len(unique),
         "duplicates": len(dupes),
         "qualified": qualified,
         "rejected": rejected,
         "correlations": correlations,
+        "run_cost": run_cost,
+        "cost_correlation_id": cost_correlation_id,
     }
 
 
