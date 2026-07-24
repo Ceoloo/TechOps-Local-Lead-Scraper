@@ -10,9 +10,22 @@ from __future__ import annotations
 import csv
 import io
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Optional, Protocol
+from typing import Any, Iterable, Optional
+
+# The Airtable upsert contract and its in-memory test double now live once in
+# the shared package; re-exported here so existing imports keep working.
+from aion_platform.integrations import (
+    AirtableClient,
+    FakeAirtableClient,
+    DEFAULT_LEADS_TABLE,
+)
 
 from .schema import Lead, validate_lead
+
+__all__ = [
+    "EXPORT_COLUMNS", "ExportSummary", "export_csv", "export_airtable",
+    "AirtableClient", "FakeAirtableClient",
+]
 
 EXPORT_COLUMNS = [
     "lead_id", "business_name", "business_category", "website", "domain",
@@ -68,31 +81,11 @@ def export_csv(leads: Iterable[Lead], *, dry_run: bool = False) -> tuple[str, Ex
     return buf.getvalue(), summary
 
 
-class AirtableClient(Protocol):
-    def upsert(self, table: str, key_field: str, record: dict[str, Any]) -> str:
-        """Return 'created' or 'updated'."""
-        ...
-
-
-class FakeAirtableClient:
-    """In-memory Airtable stand-in for contract tests (upsert on key_field)."""
-
-    def __init__(self) -> None:
-        self.tables: dict[str, dict[str, dict]] = {}
-
-    def upsert(self, table: str, key_field: str, record: dict[str, Any]) -> str:
-        store = self.tables.setdefault(table, {})
-        key = record.get(key_field)
-        result = "updated" if key in store else "created"
-        store[key] = record
-        return result
-
-
 def export_airtable(
     leads: Iterable[Lead],
     client: AirtableClient,
     *,
-    table: str = "Leads",
+    table: str = DEFAULT_LEADS_TABLE,
     key_field: str = "domain",
     dry_run: bool = False,
     incremental_since: Optional[str] = None,
